@@ -1,14 +1,14 @@
 #
 # Scala and sbt Dockerfile
 #
-# https://github.com/hseeberger/scala-sbt
+# https://github.com/prizeGit/scala-sbt
 #
 
 # Pull base image
 FROM openjdk:8u162
 
 # Env variables
-ENV SCALA_VERSION 2.12.5
+ENV SCALA_VERSION 2.11.1
 ENV SBT_VERSION 1.1.2
 
 # Scala expects this file
@@ -29,6 +29,18 @@ RUN \
   apt-get update && \
   apt-get install sbt && \
   sbt sbtVersion
+
+# Install aws cli
+RUN wget "https://bootstrap.pypa.io/get-pip.py" -O /tmp/get-pip.py \
+    && python /tmp/get-pip.py \
+    && pip install awscli==1.11.25 \
+    && rm -fr /var/lib/apt/lists/* /tmp/* /var/tmp/* 
+
+# Install node
+RUN \
+  curl -sL https://deb.nodesource.com/setup_10.x | bash - \
+  && apt-get install -y nodejs  \
+  && npm install -g @angular/cli
 
 # Define working directory
 WORKDIR /root
